@@ -34,10 +34,13 @@ jobs:
         cd day5/演習1
         python generate_test_data.py
         python train_model.py
+        echo "Checking generated files:"
         ls -la data/
         ls -la models/
+        ls -la mlruns/
     
     - name: Run tests
       run: |
         cd day5/演習1
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
         python -m pytest tests/test_model.py -v 
