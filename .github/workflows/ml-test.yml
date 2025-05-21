@@ -24,6 +24,11 @@ jobs:
         pip install -r day5/requirements.txt
         pip install pytest scikit-learn pandas numpy mlflow
     
+    - name: Create necessary directories
+      run: |
+        mkdir -p day5/演習1/data
+        mkdir -p day5/演習1/models
+    
     - name: Generate test data and train model
       run: |
         cd day5/演習1
