@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import time
-import mlflow
+import pickle
 import os
 from pathlib import Path
 
@@ -34,7 +34,9 @@ class TestModelPerformance(unittest.TestCase):
         if not model_path.exists():
             raise FileNotFoundError(f"Model file not found at {model_path}")
             
-        self.model = mlflow.sklearn.load_model(str(model_path))
+        # モデルをpickleで読み込み
+        with open(model_path, 'rb') as f:
+            self.model = pickle.load(f)
         
         # 過去のモデルのパフォーマンス（ベースライン）
         self.baseline_metrics = {

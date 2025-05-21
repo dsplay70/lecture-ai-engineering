@@ -5,9 +5,16 @@ from sklearn.ensemble import RandomForestClassifier
 import mlflow
 import mlflow.sklearn
 import os
+import pickle
+from pathlib import Path
+
+# 現在のディレクトリを取得
+current_dir = Path(__file__).parent
 
 # データの読み込み
-data = pd.read_csv('data/test_data.csv')
+data_path = current_dir / 'data' / 'test_data.csv'
+print(f"Loading data from: {data_path}")
+data = pd.read_csv(data_path)
 X = data.drop('target', axis=1)
 y = data['target']
 
@@ -15,7 +22,8 @@ y = data['target']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # MLflowの設定
-mlflow.set_tracking_uri("file:./mlruns")
+mlruns_path = current_dir / 'mlruns'
+mlflow.set_tracking_uri(f"file:{mlruns_path}")
 mlflow.set_experiment("model_training")
 
 # モデルの学習と保存
@@ -33,10 +41,15 @@ with mlflow.start_run():
     mlflow.log_metric("test_accuracy", test_score)
     
     # モデルの保存
-    mlflow.sklearn.log_model(model, "model")
+    models_dir = current_dir / 'models'
+    models_dir.mkdir(exist_ok=True)
+    model_path = models_dir / 'model.pkl'
     
-    # モデルをローカルに保存
-    os.makedirs('models', exist_ok=True)
-    mlflow.sklearn.save_model(model, 'models/model.pkl')
+    # モデルをpickleで保存
+    with open(model_path, 'wb') as f:
+        pickle.dump(model, f)
+    
+    # MLflowにも保存
+    mlflow.sklearn.log_model(model, "model")
 
-print("モデルの学習と保存が完了しました。") 
+print(f"モデルの学習と保存が完了しました。保存先: {model_path}") 
