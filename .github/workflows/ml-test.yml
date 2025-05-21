@@ -22,18 +22,20 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r day5/requirements.txt
-        pip install pytest scikit-learn pandas numpy mlflow
     
     - name: Create necessary directories
       run: |
         mkdir -p day5/演習1/data
         mkdir -p day5/演習1/models
+        mkdir -p day5/演習1/mlruns
     
     - name: Generate test data and train model
       run: |
         cd day5/演習1
         python generate_test_data.py
         python train_model.py
+        ls -la data/
+        ls -la models/
     
     - name: Run tests
       run: |
