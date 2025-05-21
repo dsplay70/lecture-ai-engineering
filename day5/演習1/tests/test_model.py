@@ -9,14 +9,16 @@ from pathlib import Path
 
 class TestModelPerformance(unittest.TestCase):
     def setUp(self):
-        # テストデータの読み込み
-        self.test_data = pd.read_csv('../data/test_data.csv')
+        # テストデータの読み込み（パスを修正）
+        current_dir = Path(__file__).parent
+        data_path = current_dir.parent / 'data' / 'test_data.csv'
+        self.test_data = pd.read_csv(data_path)
         self.X_test = self.test_data.drop('target', axis=1)
         self.y_test = self.test_data['target']
         
-        # モデルの読み込み
-        self.model_path = '../models/model.pkl'
-        self.model = mlflow.sklearn.load_model(self.model_path)
+        # モデルの読み込み（パスを修正）
+        model_path = current_dir.parent / 'models' / 'model.pkl'
+        self.model = mlflow.sklearn.load_model(str(model_path))
         
         # 過去のモデルのパフォーマンス（ベースライン）
         self.baseline_metrics = {
