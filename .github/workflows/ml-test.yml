@@ -26,12 +26,42 @@ jobs:
         python -m pip install --upgrade pip
         pip install scikit-learn pandas numpy
     
+    - name: Check directory structure
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Directory contents:"
+        ls -la
+        echo "Tests directory contents:"
+        ls -la tests/
+        echo "Models directory contents:"
+        ls -la models/
+        echo "Data directory contents:"
+        ls -la data/
+    
     - name: Generate test data
-      run: python generate_test_data.py
+      run: |
+        echo "Generating test data..."
+        python generate_test_data.py
+        echo "Test data generated. Contents of data directory:"
+        ls -la data/
     
     - name: Train model
-      run: python train_model.py
+      run: |
+        echo "Training model..."
+        python train_model.py
+        echo "Model trained. Contents of models directory:"
+        ls -la models/
     
     - name: Run model tests
       run: |
-        python -m unittest discover -s tests 
+        echo "Running model tests..."
+        python -m unittest discover -s tests -v
+        echo "Tests completed."
+    
+    - name: Check test results
+      if: always()
+      run: |
+        echo "Test execution completed. Checking results..."
+        if [ -f "test_results.txt" ]; then
+          cat test_results.txt
+        fi 
